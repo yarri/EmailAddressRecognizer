@@ -1,0 +1,24 @@
+{
+        "name": "yarri/email-address-recognizer",
+        "type": "library",
+        "description": "",
+        "keywords": [],
+        "homepage": "https://github.com/yarri/EmailAddressRecognizer",
+        "license": ["MIT"],
+        "authors": [
+                {
+                        "name": "Jaromir Tomek",
+                        "homepage": "https://github.com/yarri"
+                }
+        ],
+        "require": {
+                "php": ">=5.6.0",
+                "atk14/forms": "^1.0"
+        },
+        "require-dev": {
+                "atk14/tester": "*"
+        },
+        "autoload": {
+                "classmap": ["src"]
+        }
+}
