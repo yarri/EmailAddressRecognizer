@@ -13,7 +13,8 @@
         ],
         "require": {
                 "php": ">=5.6.0",
-                "atk14/forms": "^1.0"
+                "atk14/forms": "1.*",
+                "atk14/dictionary": "1.*"
         },
         "require-dev": {
                 "atk14/tester": "*"

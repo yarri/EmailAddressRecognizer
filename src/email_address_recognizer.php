@@ -125,7 +125,7 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
 		$groups = EmailAddressRecognizer::_split_addresses_by_group($address);
 
 		foreach($groups as $group_item){
-			$GROUP_NAME = $group_item["group_name"];
+			$GROUP_NAME = $group_item["group"];
 			$group_addresses = EmailAddressRecognizer::_split_addresses_by_emails($group_item["addresses"]);
 			reset($group_addresses);
 			foreach($group_addresses as $FULL_ADDRESS){
@@ -136,14 +136,14 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
 				}
 				$ADDRESS = $_ar["address"];
 				$DOMAIN = $_ar["domain"];
-				$PERSONAL = $_ar["personal"];
+				$PERSONAL = $_ar["name"];
 
 				$out[] = array(
-					"group_name" => $GROUP_NAME,
+					"group" => $GROUP_NAME,
 					"full_address" => $FULL_ADDRESS,
 					"address" => $ADDRESS,
 					"domain" => $DOMAIN,
-					"personal" => $PERSONAL,
+					"name" => $PERSONAL,
 					"valid" => $_ar["valid"],
 				);
 			}
@@ -161,7 +161,7 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
 		$_in_comment = false;
 		$_in_doublequote = false;
 		$_in_group = false;
-		$_group_name = "";
+		$_group = "";
 
 		$char = null;
 		$prev_char = null;
@@ -198,7 +198,7 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
 			
 			if($char==":" && $prev_char!="\\" && !$_in_group && !$_in_comment && !$_in_comment && !$_in_doublequote){
 				$_in_group = true;
-				$_group_name = $_item;
+				$_group = $_item;
 				$prev_char = $char;
 				$_item = "";
 				continue;
@@ -207,11 +207,11 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
 			if($char ==";" && $prev_char!="\\" && $_in_group && !$_in_comment && !$_in_doublequote){
 				$_in_group = false;
 				$out[] = array(
-					"group_name" => trim($_group_name),
+					"group" => trim($_group),
 					"addresses" => trim($_item)
 				);
 				$prev_char = $char;
-				$group_name = "";
+				$group = "";
 				$_item = "";
 				continue;
 			}
@@ -222,7 +222,7 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
 		}
 		if(strlen(trim($_item))>0){
 			$out[] = array(
-				"group_name" => trim($_group_name),
+				"group" => trim($_group),
 				"addresses" => trim($_item)
 			);
 		}
@@ -296,7 +296,7 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
 			"valid" => false,
 			"address" => "",
 			"domain" => "",
-			"personal" => ""
+			"name" => ""
 		);
 
 
@@ -306,22 +306,22 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
 		}elseif(preg_match('/^"?(.*)"?\s*<(.+@.+)>$/',$address,$pieces)){
 			$out["valid"] = true;
 			$out["address"] = trim($pieces[2]);
-			$out["personal"] = trim($pieces[1]);
+			$out["name"] = trim($pieces[1]);
 		}elseif(preg_match('/^"?(.*)"?\s*(\\b.+@.+)$/',$address,$pieces)){
 			$out["valid"] = true;
 			$out["address"] = trim($pieces[2]);
-			$out["personal"] = trim($pieces[1]);
+			$out["name"] = trim($pieces[1]);
 		}
 
 		if($out["valid"]==true){
 			$out["address"] = trim($out["address"]); // TODO: Tady bylo strtolower, asi bych zmensil jenom domenu, nebo nejak takto: JOHN@DOE.COM -> john@doe.com -> John@doe.com -> John@doe.com
-			$out["personal"] = trim($out["personal"]);
+			$out["name"] = trim($out["name"]);
 			$_ar = explode("@",$out["address"]);
 			$out["domain"] = "$_ar[1]";
 		}
 
 		//zustavaji mi na koci uvozovky
-		$out["personal"] = preg_replace('/"$/','',$out["personal"]);
+		$out["name"] = preg_replace('/"$/','',$out["name"]);
 
 		return $out;
 	}

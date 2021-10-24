@@ -27,8 +27,9 @@ class TcEmailAddressRecognizer extends TcBase{
 		$this->assertEquals(array(
 			"valid" => true,
 			"address" => "john.doe@example.com",
+			"full_address" => '"John Doe" <john.doe@example.com>',
 			"name" => "John Doe",
-			"domain" => "example.com" ,
+			"domain" => "example.com",
 			"group" => "",
 			"valid" => true,
 		),$er->toArray());

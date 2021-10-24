@@ -1,19 +1,18 @@
 <?php
 namespace Yarri\EmailAddressRecognizer;
 
-class RecognizedItem implements \ArrayAccess{
+class RecognizedItem extends \Dictionary {
 
-	protected $data;
 	protected $str;
 
 	function __construct($string_ordata){
 		if(is_array($string_ordata)){
-			$this->data = $string_ordata;
-			$this->str = $this->data["full_address"];
+			parent::__construct($string_ordata);
+			$this->str = $this["full_address"];
 		}else{
 			$this->str = $string_ordata;
 			$er = new \Yarri\EmailAddressRecognizer($string_ordata);
-			$this->data = $er[0]->data;
+			parent::__construct($er[0]->toArray());
 		}
 
 		//var_dump($this->data);
@@ -25,29 +24,16 @@ class RecognizedItem implements \ArrayAccess{
 	function getId(){ return $this->toString(); }
 
 	function toArray(){
-		$i = $this->data;
-		if($i["valid"]){
+		if($this["valid"]){
 			// ha! originalni kod listonose spatne validuje emailovou adresu,
 			// tady pouzijeme EmailField z Atk14
 			$f = new \EmailField(array());
-			list($err,$val) = $f->clean($i["address"]);
+			list($err,$val) = $f->clean($this["address"]);
 			if($err){
-				$i["valid"] = false;
-				$i["address"] = "";
+				$this["valid"] = false;
+				$this["address"] = "";
 			}
 		}
-		return array(
-			"valid" => $i["valid"],
-			"address" => $i["address"],
-			"name" => $i["personal"],
-			"domain" => $i["domain"],
-			"group" => $i["group_name"],
-		);
+		return parent::toArray();
 	}
-
-	/* ArrayAccess methods */
-	public function offsetExists ($offset){ return $a = $this->toArray(); return in_array("$offset",array_keys($a)); }
-	public function offsetGet ( $offset ){ $a = $this->toArray(); return $a["$offset"]; }
-	public function offsetSet ( $offset , $value ){ /* read only*/ }
-	public function offsetUnset ( $offset ){ /* read only */ }
 }
