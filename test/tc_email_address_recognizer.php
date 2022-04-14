@@ -1,6 +1,24 @@
 <?php
 class TcEmailAddressRecognizer extends TcBase{
 
+	function test1(){
+		$item = new Yarri\EmailAddressRecognizer\RecognizedItem("john@doe.com");
+		$this->assertEquals(true,$item["valid"]);
+
+		$item = new Yarri\EmailAddressRecognizer\RecognizedItem("john@doe.com, samantha@doe.cz");
+		$this->assertEquals(false,$item["valid"]);
+	}
+
+	function test_basic_usage(){
+		$ear = new Yarri\EmailAddressRecognizer("john@doe.com");
+		$this->assertEquals(true,$ear->isValid());
+		$this->assertEquals("john@doe.com",(string)$ear);
+		$items = $ear->toArray();
+		$this->assertEquals(1,sizeof($items));
+
+		$ear = new Yarri\EmailAddressRecognizer('John Doe <john@doe.com>');
+	}
+
 	function test_empty_list(){
 		$ers = new Yarri\EmailAddressRecognizer("");
 		$this->assertTrue(is_object($ers));
@@ -41,6 +59,15 @@ class TcEmailAddressRecognizer extends TcBase{
 		$this->assertEquals(true,$er["valid"]);
 
 		$er = new Yarri\EmailAddressRecognizer\RecognizedItem('Hacker: Ian Fear <me-123@ian.fear.com>');
+		$this->assertEquals(array(
+			"valid" => true,
+			"address" => "me-123@ian.fear.com",
+			"full_address" => 'Ian Fear <me-123@ian.fear.com>',
+			"name" => "Ian Fear",
+			"domain" => "ian.fear.com",
+			"group" => "Hacker",
+			"valid" => true,
+		),$er->toArray());
 		$this->assertEquals('Hacker: Ian Fear <me-123@ian.fear.com>',"$er");
 		$this->assertEquals("me-123@ian.fear.com",$er["address"]);
 		$this->assertEquals("ian.fear.com",$er["domain"]);

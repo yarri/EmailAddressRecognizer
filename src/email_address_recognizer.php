@@ -3,13 +3,18 @@ namespace Yarri;
 
 class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 
-	private $_str;
-	private $_ary = array();
+	protected $_str;
+	protected $_ary = array();
+	protected $charset = null;
 
-	function __construct($str_addresses){
+	function __construct($str_addresses,$options = []){
+		$options += [
+			"charset" => defined("DEFAULT_CHARSET") ? constant("DEFAULT_CHARSET") : "UTF-8",
+		];
+
 		$this->_str = (string)$str_addresses;
-
 		$this->_ary = self::split_addresses($str_addresses);
+		$this->charset = $options["charset"];
 	}
 
 	function toString(){ return $this->_str; }
@@ -34,6 +39,19 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 	public function valid (){
 		$key = key($this->_ary);
 		return ($key !== null && $key !== false);
+	}
+
+	function toArray(){
+		$out = [];
+		foreach($this as $item){ $out[] = $item; }
+		return $out;
+	}
+
+	function isValid(){
+		foreach($this as $item){
+			if(!$item["valid"]){ return false; }
+		}
+		return true;
 	}
 
 
@@ -443,6 +461,7 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
 		}
 		return join("\n",$out);
 	}
+
 	static function check_address($mail){
  	 if($mail==""){
  	   return false;
@@ -451,5 +470,41 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
  	   return false;
  	 }
  	 return true;
+	}
+
+	protected function _sendmail_render_email_address($from,$from_name){
+		return $from_name ? _sendmail_escape_email_name($from_name)." <$from>" : $from;
+	}
+
+	protected function _sendmail_escape_email_name($from_name){
+		$out = _sendmail_escape_subject($from_name);
+		if($out==$from_name){
+			$out = '"'.str_replace('"','\"',$out).'"';
+		}
+		return $out;
+	}
+
+	protected function _sendmail_escape_subject($subject){
+		$charset = $this->charset;
+		if(Translate::CheckEncoding($subject,"ascii")){ return $subject; }
+
+		$out = array();
+		$escape_in_use = false;
+		$out[] = "=?$charset?Q?";
+		for($i=0;$i<strlen($subject);$i++){
+			$c = $subject[$i];
+			if(in_array($c,array("=","?",":","/","_","[","]")) || !Translate::CheckEncoding($c,"ascii")){
+				$out[] = "=".strtoupper(dechex(ord($c)));
+				$escape_in_use = true;
+			}else{
+				// RFC 2047 dovoluje mezeru nahradit podtrzitkem
+				$out[] = ($c==" ")?"_":$c;
+				if ($c==" ") $escape_in_use = true;
+			}
+		}
+		if(!$escape_in_use){ return $subject; }
+
+		$out[] = "?=";
+		return join("",$out);
 	}
 }

@@ -12,7 +12,12 @@ class RecognizedItem extends \Dictionary {
 		}else{
 			$this->str = $string_ordata;
 			$er = new \Yarri\EmailAddressRecognizer($string_ordata);
-			parent::__construct($er[0]->toArray());
+			$items = $er->toArray();
+			$ar = $items[0]->toArray();
+			if(sizeof($items)>1){
+				$ar["valid"] = false;
+			}
+			parent::__construct($ar);
 		}
 
 		//var_dump($this->data);
