@@ -17,7 +17,9 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 		$this->charset = $options["charset"];
 	}
 
-	function toString(){ return $this->_str; }
+	function toString(){
+		return join(", ",$this->toArray());
+	}
 	function __toString(){ return $this->toString(); }
 
 	function getId(){ return $this->toString(); }
