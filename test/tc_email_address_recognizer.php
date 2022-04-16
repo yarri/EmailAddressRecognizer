@@ -1,14 +1,6 @@
 <?php
 class TcEmailAddressRecognizer extends TcBase{
 
-	function test1(){
-		$item = new Yarri\EmailAddressRecognizer\RecognizedItem("john@doe.com");
-		$this->assertEquals(true,$item["valid"]);
-
-		$item = new Yarri\EmailAddressRecognizer\RecognizedItem("john@doe.com, samantha@doe.cz");
-		$this->assertEquals(false,$item["valid"]);
-	}
-
 	function test_basic_usage(){
 		$ear = new Yarri\EmailAddressRecognizer("john@doe.com");
 		$this->assertEquals(true,$ear->isValid());
@@ -17,7 +9,91 @@ class TcEmailAddressRecognizer extends TcBase{
 		$this->assertEquals(1,sizeof($items));
 
 		$ear = new Yarri\EmailAddressRecognizer('John Doe <john@doe.com>');
+		$this->assertEquals(true,$ear->isValid());
+		$this->assertEquals("John Doe <john@doe.com>",(string)$ear);
+		$items = $ear->toArray();
+		$this->assertEquals(1,sizeof($items));
+
+		// two valid addresses
+		$ear = new Yarri\EmailAddressRecognizer('John Doe <john@doe.com>, samantha@doe.com');
+		$this->assertEquals(true,$ear->isValid());
+		$this->assertEquals("John Doe <john@doe.com>, samantha@doe.com",(string)$ear);
+		$items = $ear->toArray();
+		$this->assertEquals(2,sizeof($items));
+		$this->assertEquals("John Doe <john@doe.com>",(string)$items[0]);
+		$this->assertEquals("samantha@doe.com",(string)$items[1]);
+
+		$ear = new Yarri\EmailAddressRecognizer('John Doe <john@doe.com>, , samantha@doe.com');
+		$this->assertEquals(false,$ear->isValid());
+		$this->assertEquals("John Doe <john@doe.com>, , samantha@doe.com",(string)$ear);
+		$items = $ear->toArray();
+		$this->assertEquals(3,sizeof($items));
+		$this->assertEquals("John Doe <john@doe.com>",(string)$items[0]);
+		$this->assertEquals(true,$items[0]["valid"]);
+		$this->assertEquals("",(string)$items[1]);
+		$this->assertEquals(false,$items[1]["valid"]);
+		$this->assertEquals("samantha@doe.com",(string)$items[2]);
+		$this->assertEquals(true,$items[2]["valid"]);
+
+		// invalid email address
+		$ear = new Yarri\EmailAddressRecognizer('john.doe');
+		$this->assertEquals(false,$ear->isValid());
+		$this->assertEquals("john.doe",(string)$ear);
+		$items = $ear->toArray();
+		$this->assertEquals(1,sizeof($items));
+		$this->assertEquals("john.doe",(string)$items[0]);
+		$this->assertEquals(false,$items[0]["valid"]);
+
+		// empty input
+		$ear = new Yarri\EmailAddressRecognizer(' ');
+		$this->assertEquals(true,$ear->isValid());
+		$this->assertEquals(" ",(string)$ear);
+		$items = $ear->toArray();
+		$this->assertEquals(0,sizeof($items));
+
+		// valid & invalid email address
+		$ear = new Yarri\EmailAddressRecognizer('John Doe <john@doe.com>, samantha@@doe.com');
+		$this->assertEquals(false,$ear->isValid());
+		$this->assertEquals("John Doe <john@doe.com>, samantha@@doe.com",(string)$ear);
+		$items = $ear->toArray();
+		$this->assertEquals(2,sizeof($items));
+		$this->assertEquals("John Doe <john@doe.com>",(string)$items[0]);
+		$this->assertEquals(true,$items[0]["valid"]);
+		$this->assertEquals("samantha@@doe.com",(string)$items[1]);
+		$this->assertEquals(false,$items[1]["valid"]);
 	}
+
+	function test_RecognizedItem(){
+		foreach([
+			"john@doe.com",
+			"John@doe.com",
+			"JOHN@DOE.COM",
+			"john@doe.com",
+			// "<john@doe.com>", // ??
+			"John Doe <john@doe.com>",
+			'"Doe, John" <john@doe.com>'
+		] as $email_address){
+			$item = new Yarri\EmailAddressRecognizer\RecognizedItem($email_address);
+			$this->assertEquals(true,$item["valid"],$email_address);
+		}
+
+		foreach([
+			"",
+			"xxx",
+			"john.doe.com",
+			"@doe.com",
+			"john@",
+			"john@@doe.com",
+			"john@doe@com",
+			"john@doe.com, samantha@doe.cz",
+			"John Doe <john.doe.com>",
+			"John Doe <>",
+		] as $email_address){
+			$item = new Yarri\EmailAddressRecognizer\RecognizedItem($email_address);
+			$this->assertEquals(false,$item["valid"],$email_address);
+		}
+	}
+
 
 	function test_empty_list(){
 		$ers = new Yarri\EmailAddressRecognizer("");

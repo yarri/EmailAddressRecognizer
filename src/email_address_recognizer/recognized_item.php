@@ -13,32 +13,20 @@ class RecognizedItem extends \Dictionary {
 			$this->str = $string_ordata;
 			$er = new \Yarri\EmailAddressRecognizer($string_ordata);
 			$items = $er->toArray();
-			$ar = $items[0]->toArray();
-			if(sizeof($items)>1){
-				$ar["valid"] = false;
+			if(!$items){
+				$ar = ["valid" => false];
+			}else{
+				$ar = $items[0]->toArray();
+				if(sizeof($items)>1){
+					$ar["valid"] = false;
+				}
 			}
 			parent::__construct($ar);
 		}
-
-		//var_dump($this->data);
 	}
 
 	function toString(){ return $this->str; }
 	function __toString(){ return $this->toString(); }
 
 	function getId(){ return $this->toString(); }
-
-	function toArray(){
-		if($this["valid"]){
-			// ha! originalni kod listonose spatne validuje emailovou adresu,
-			// tady pouzijeme EmailField z Atk14
-			$f = new \EmailField(array());
-			list($err,$val) = $f->clean($this["address"]);
-			if($err){
-				$this["valid"] = false;
-				$this["address"] = "";
-			}
-		}
-		return parent::toArray();
-	}
 }

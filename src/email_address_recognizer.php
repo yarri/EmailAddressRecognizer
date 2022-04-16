@@ -317,7 +317,6 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
 			"name" => ""
 		);
 
-
 		if(preg_match('/^[^"\s]+@.+$/',$address,$pieces)){
 			$out["valid"] = true;
 			$out["address"] = $address;
@@ -340,6 +339,17 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
 
 		//zustavaji mi na koci uvozovky
 		$out["name"] = preg_replace('/"$/','',$out["name"]);
+
+		if($out["valid"]){
+			// ha! originalni kod listonose spatne validuje emailovou adresu,
+			// tady pouzijeme EmailField z Atk14
+			$f = new \EmailField(array());
+			list($err,$val) = $f->clean($out["address"]);
+			if($err){
+				$out["valid"] = false;
+				$out["address"] = "";
+			}
+		}
 
 		return $out;
 	}
