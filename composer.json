@@ -1,7 +1,7 @@
 {
         "name": "yarri/email-address-recognizer",
         "type": "library",
-        "description": "",
+        "description": "Parses email addresses from a string",
         "keywords": [],
         "homepage": "https://github.com/yarri/EmailAddressRecognizer",
         "license": ["MIT"],
