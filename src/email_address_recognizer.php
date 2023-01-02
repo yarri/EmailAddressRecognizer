@@ -25,16 +25,21 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 	function getId(){ return $this->toString(); }
 
 	/* ArrayAccess methods */
+	#[\ReturnTypeWillChange]	
 	public function offsetExists ( $offset ){ return isset($this->_ary[$offset]); }
+	#[\ReturnTypeWillChange]
 	public function offsetGet ( $offset ){ return new EmailAddressRecognizer\RecognizedItem($this->_ary[$offset]); }
 	public function offsetSet ( $offset , $value ){ /* read only */ }
 	public function offsetUnset ( $offset ){ /* read only */ }
 
 	/* Countable method */
+	#[\ReturnTypeWillChange]
 	public function count(){ return sizeof($this->_ary); }
 
 	/* Iterator methods */
+	#[\ReturnTypeWillChange]
 	public function current (){ $item = current($this->_ary); return $item ? new EmailAddressRecognizer\RecognizedItem($item) : null; }
+	#[\ReturnTypeWillChange]
 	public function key (){ return key($this->_ary); }
 	public function next (){ $item = next($this->_ary); return $item ? new EmailAddressRecognizer\RecognizedItem($item) : null; }
 	public function rewind (){ reset($this->_ary); }
