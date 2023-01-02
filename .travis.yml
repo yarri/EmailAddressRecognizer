@@ -26,6 +26,7 @@ jobs:
       dist: focal
 
 before_install:
+  - apt-get install -y libargon2-0 || echo "apt-get install -y libargon2-0 failed"
   - composer update --dev
 
 script:
