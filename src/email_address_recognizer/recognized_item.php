@@ -25,6 +25,14 @@ class RecognizedItem extends \Dictionary {
 		}
 	}
 
+	function getAddress(){ return $this["address"]; }
+	function getName(){ return $this["name"]; }
+	function getFullAddress(){ return $this["full_address"]; }
+	function getDomain(){ return $this["domain"]; }
+	function getGroup(){ return $this["group"]; }
+	function isValid(){ return $this["valid"]; }
+	
+
 	function toString(){ return $this->str; }
 	function __toString(){ return $this->toString(); }
 
