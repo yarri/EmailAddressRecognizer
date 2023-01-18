@@ -1,6 +1,8 @@
 EmailAddressRecognizer
 ======================
 
+Parses email addresses from the From: header in a message.
+
 Usage
 -----
 
