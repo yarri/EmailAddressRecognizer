@@ -1,7 +1,7 @@
 EmailAddressRecognizer
 ======================
 
-Parses email addresses from the From: header in a message.
+Parses email addresses from the To: or Cc: header in a message.
 
 Usage
 -----

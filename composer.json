@@ -1,7 +1,7 @@
 {
         "name": "yarri/email-address-recognizer",
         "type": "library",
-        "description": "Parses email addresses from the From: header in a message.",
+        "description": "Parses email addresses from the To: or Cc: header in a message.",
         "keywords": [],
         "homepage": "https://github.com/yarri/EmailAddressRecognizer",
         "license": ["MIT"],
