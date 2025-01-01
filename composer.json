@@ -18,7 +18,7 @@
                 "atk14/dictionary": "1.*"
         },
         "require-dev": {
-                "atk14/tester": "*"
+                "atk14/tester": "0.5.*"
         },
         "autoload": {
                 "classmap": ["src"]
