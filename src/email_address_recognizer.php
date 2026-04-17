@@ -241,7 +241,7 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
 					"addresses" => trim($_item)
 				);
 				$prev_char = $char;
-				$group = "";
+				$_group = "";
 				$_item = "";
 				continue;
 			}
