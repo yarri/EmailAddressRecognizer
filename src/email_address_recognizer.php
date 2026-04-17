@@ -3,7 +3,6 @@ namespace Yarri;
 
 class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 
-	protected $_str;
 	protected $_ary = array();
 	protected $charset = null;
 
@@ -12,7 +11,6 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 			"charset" => defined("DEFAULT_CHARSET") ? constant("DEFAULT_CHARSET") : "UTF-8",
 		];
 
-		$this->_str = (string)$str_addresses;
 		$this->_ary = self::split_addresses($str_addresses);
 		$this->charset = $options["charset"];
 	}
