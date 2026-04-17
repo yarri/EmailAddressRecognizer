@@ -1,6 +1,8 @@
 EmailAddressRecognizer
 ======================
 
+[![Tests](https://github.com/yarri/EmailAddressRecognizer/actions/workflows/tests.yml/badge.svg)](https://github.com/yarri/EmailAddressRecognizer/actions/workflows/tests.yml)
+
 Parses email addresses from the To: or Cc: header in a message.
 
 Usage
