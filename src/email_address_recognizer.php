@@ -42,7 +42,7 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 	#[\ReturnTypeWillChange]
 	public function key (){ return key($this->_ary); }
 	#[\ReturnTypeWillChange]
-	public function next (){ $item = next($this->_ary); return $item ? new EmailAddressRecognizer\RecognizedItem($item) : null; }
+	public function next (){ next($this->_ary); }
 	#[\ReturnTypeWillChange]
 	public function rewind (){ reset($this->_ary); }
 	#[\ReturnTypeWillChange]
@@ -280,7 +280,7 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 			$out["address"] = trim($out["address"]); // TODO: Tady bylo strtolower, asi bych zmensil jenom domenu, nebo nejak takto: JOHN@DOE.COM -> john@doe.com -> John@doe.com -> John@doe.com
 			$out["name"] = trim($out["name"]);
 			$_ar = explode("@",$out["address"]);
-			$out["domain"] = "$_ar[1]";
+			$out["domain"] = end($_ar);
 		}
 
 		//zustavaji mi na koci uvozovky
