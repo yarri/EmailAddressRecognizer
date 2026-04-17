@@ -34,7 +34,7 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 
 	/* Countable method */
 	#[\ReturnTypeWillChange]
-	public function count(){ return sizeof($this->_ary); }
+	public function count(){ return count($this->_ary); }
 
 	/* Iterator methods */
 	#[\ReturnTypeWillChange]
@@ -68,7 +68,7 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 	//je to pro rychle ziskani adresy
 	static function get_address($address){
 		$_ar = self::split_addresses($address);
-		if(sizeof($_ar)==0){
+		if(count($_ar)==0){
 			return "";
 		}
 		return $_ar[0]["address"];
@@ -76,7 +76,7 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 
 	static function get_domain($address){
 		$_ar = self::split_addresses($address);
-		if(sizeof($_ar)==0){
+		if(count($_ar)==0){
 			return "";
 		}
 		return $_ar[0]["domain"];	
@@ -252,7 +252,7 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 	}
 
 	static function _split_addresses_get_email($address){
-		settype($address,"string");
+		$address = (string)$address;
 		$address = trim($address);
 
 		$out = array(
