@@ -17,7 +17,7 @@ class RecognizedItem extends \Dictionary {
 				$ar = ["valid" => false];
 			}else{
 				$ar = $items[0]->toArray();
-				if(sizeof($items)>1){
+				if(count($items)>1){
 					$ar["valid"] = false;
 				}
 			}

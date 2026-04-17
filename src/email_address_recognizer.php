@@ -92,11 +92,7 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 			$group_addresses = EmailAddressRecognizer::_split_addresses_by_emails($group_item["addresses"]);
 			reset($group_addresses);
 			foreach($group_addresses as $FULL_ADDRESS){
-				//echo $GROUP_NAME." --> ".$FULL_ADDRESS."<br>";
 				$_ar = EmailAddressRecognizer::_split_addresses_get_email($FULL_ADDRESS);
-				if(!$_ar["valid"]){
-					//continue;
-				}
 				$ADDRESS = $_ar["address"];
 				$DOMAIN = $_ar["domain"];
 				$PERSONAL = $_ar["name"];
