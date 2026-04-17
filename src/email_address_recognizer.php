@@ -129,7 +129,8 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 		$char = null;
 		$prev_char = null;
 	
-		for($i=0;$i<strlen($address);$i++){
+		$len = strlen($address);
+		for($i=0;$i<$len;$i++){
 
 			$char = $address[$i];
 
