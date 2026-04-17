@@ -493,40 +493,4 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
  	 }
  	 return true;
 	}
-
-	protected function _sendmail_render_email_address($from,$from_name){
-		return $from_name ? _sendmail_escape_email_name($from_name)." <$from>" : $from;
-	}
-
-	protected function _sendmail_escape_email_name($from_name){
-		$out = _sendmail_escape_subject($from_name);
-		if($out==$from_name){
-			$out = '"'.str_replace('"','\"',$out).'"';
-		}
-		return $out;
-	}
-
-	protected function _sendmail_escape_subject($subject){
-		$charset = $this->charset;
-		if(Translate::CheckEncoding($subject,"ascii")){ return $subject; }
-
-		$out = array();
-		$escape_in_use = false;
-		$out[] = "=?$charset?Q?";
-		for($i=0;$i<strlen($subject);$i++){
-			$c = $subject[$i];
-			if(in_array($c,array("=","?",":","/","_","[","]")) || !Translate::CheckEncoding($c,"ascii")){
-				$out[] = "=".strtoupper(dechex(ord($c)));
-				$escape_in_use = true;
-			}else{
-				// RFC 2047 dovoluje mezeru nahradit podtrzitkem
-				$out[] = ($c==" ")?"_":$c;
-				if ($c==" ") $escape_in_use = true;
-			}
-		}
-		if(!$escape_in_use){ return $subject; }
-
-		$out[] = "?=";
-		return join("",$out);
-	}
 }
