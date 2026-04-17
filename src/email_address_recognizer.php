@@ -226,7 +226,7 @@ The above example is aesthetically displeasing, but perfectly legal. Note partic
 			}
 
 			
-			if($char==":" && $prev_char!="\\" && !$_in_group && !$_in_comment && !$_in_comment && !$_in_doublequote){
+			if($char==":" && $prev_char!="\\" && !$_in_group && !$_in_comment && !$_in_doublequote){
 				$_in_group = true;
 				$_group = $_item;
 				$prev_char = $char;
