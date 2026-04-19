@@ -4,15 +4,9 @@ namespace Yarri;
 class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 
 	protected $_ary = array();
-	protected $charset = null;
 
-	function __construct($str_addresses,$options = []){
-		$options += [
-			"charset" => defined("DEFAULT_CHARSET") ? constant("DEFAULT_CHARSET") : "UTF-8",
-		];
-
+	function __construct($str_addresses){
 		$this->_ary = self::split_addresses($str_addresses);
-		$this->charset = $options["charset"];
 	}
 
 	function toString(){
@@ -90,7 +84,6 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 		foreach($groups as $group_item){
 			$GROUP_NAME = $group_item["group"];
 			$group_addresses = EmailAddressRecognizer::_split_addresses_by_emails($group_item["addresses"]);
-			reset($group_addresses);
 			foreach($group_addresses as $FULL_ADDRESS){
 				$_ar = EmailAddressRecognizer::_split_addresses_get_email($FULL_ADDRESS);
 				$ADDRESS = $_ar["address"];
@@ -199,7 +192,8 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 		$char = null;
 		$prev_char = null;
 	
-		for($i=0;$i<strlen($address);$i++){
+		$len = strlen($address);
+		for($i=0;$i<$len;$i++){
 
 			$char = $address[$i];
 
