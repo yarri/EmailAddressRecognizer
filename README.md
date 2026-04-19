@@ -44,11 +44,11 @@ new Yarri\EmailAddressRecognizer('John Doe <john@doe.com>');
 // Quoted display name (allows commas and special characters in the name)
 new Yarri\EmailAddressRecognizer('"Doe, John" <john@doe.com>');
 
-// RFC 2822 group syntax
-new Yarri\EmailAddressRecognizer('IT: John Doe <john@doe.com>, jane@doe.com;');
-
 // Multiple addresses
 new Yarri\EmailAddressRecognizer('john@doe.com, Jane Doe <jane@doe.com>');
+
+// RFC 2822 group syntax
+new Yarri\EmailAddressRecognizer('IT: John Doe <john@doe.com>, jane@doe.com;');
 ```
 
 Iterating Over Addresses
@@ -125,6 +125,7 @@ echo $item;              // '"Doe, John" <john@doe.com>'
 (new Yarri\EmailAddressRecognizer\RecognizedItem('john@doe.com, jane@doe.com'))->isValid();   // false
 ```
 
+<!--
 Static Helpers
 --------------
 
@@ -134,6 +135,7 @@ Quick extraction without creating a full object:
 Yarri\EmailAddressRecognizer::get_address('John Doe <john@doe.com>'); // "john@doe.com"
 Yarri\EmailAddressRecognizer::get_domain('John Doe <john@doe.com>');  // "doe.com"
 ```
+-->
 
 Testing
 -------
