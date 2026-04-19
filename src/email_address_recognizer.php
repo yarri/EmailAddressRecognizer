@@ -273,7 +273,7 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 		}
 
 		if($out["valid"]==true){
-			$out["address"] = trim($out["address"]); // TODO: Tady bylo strtolower, asi bych zmensil jenom domenu, nebo nejak takto: JOHN@DOE.COM -> john@doe.com -> John@doe.com -> John@doe.com
+			$out["address"] = trim($out["address"]);
 			$out["name"] = trim($out["name"]);
 			$_ar = explode("@",$out["address"]);
 			$out["domain"] = end($_ar);
@@ -283,11 +283,9 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 		$out["name"] = preg_replace('/"$/','',$out["name"]);
 
 		if($out["valid"]){
-			// ha! originalni kod listonose spatne validuje emailovou adresu,
-			// tady pouzijeme EmailField z Atk14
-			$f = new \EmailField(array());
-			list($err,$val) = $f->clean($out["address"]);
-			if($err){
+			// spolehlivejsi validace prevzata z EmailField z frameworku ATK14
+			$email_pattern = "/^([-!#$%&'*+\\/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+\\/=?^_`{}|~0-9A-Z]+)*".'|"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-011\013\014\016-\177])*"'.')@(?:[A-Z0-9-]+\.)+[A-Z]{2,14}$/i';
+			if(!preg_match($email_pattern,$out["address"])){
 				$out["valid"] = false;
 				$out["address"] = "";
 			}
