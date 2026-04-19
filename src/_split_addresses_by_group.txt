@@ -1,0 +1,77 @@
+	static function _split_addresses_by_group($address){
+		$address = trim($address);
+
+		$out = array();
+
+		$_item = "";
+		$_in_comment = false;
+		$_in_doublequote = false;
+		$_in_group = false;
+		$_group = "";
+
+		$char = null;
+		$prev_char = null;
+	
+		$len = strlen($address);
+		for($i=0;$i<$len;$i++){
+
+			$char = $address[$i];
+
+			if($char=='(' && $prev_char!="\\" && !$_in_comment && !$_in_doublequote){
+				$_in_comment = true;
+				$_item .= $char;
+				$prev_char = $char;
+				continue;
+			}
+
+			if($char==')' && $prev_char!="\\" && $_in_comment){
+				$_in_comment = false;
+				$_item .= $char;
+				$prev_char = $char;
+				continue;
+			}
+
+			if($char=='"' && $prev_char!="\\" && !$_in_comment){
+				if($_in_doublequote){
+					$_in_doublequote = false;
+				}else{
+					$_in_doublequote = true;
+				}
+				$_item .= $char;
+				$prev_char = $char;
+				continue;
+			}
+
+			
+			if($char==":" && $prev_char!="\\" && !$_in_group && !$_in_comment && !$_in_doublequote){
+				$_in_group = true;
+				$_group = $_item;
+				$prev_char = $char;
+				$_item = "";
+				continue;
+			}
+
+			if($char ==";" && $prev_char!="\\" && $_in_group && !$_in_comment && !$_in_doublequote){
+				$_in_group = false;
+				$out[] = array(
+					"group" => trim($_group),
+					"addresses" => trim($_item)
+				);
+				$prev_char = $char;
+				$_group = "";
+				$_item = "";
+				continue;
+			}
+
+			$_item .= $char;
+			
+			$prev_char = $char;
+		}
+		if(strlen(trim($_item))>0){
+			$out[] = array(
+				"group" => trim($_group),
+				"addresses" => trim($_item)
+			);
+		}
+		return $out;
+	}

@@ -228,4 +228,24 @@ class TcEmailAddressRecognizer extends TcBase{
 
 		$this->assertEquals(false,$er["valid"]);
 	}
+
+	function test__split_on_delimiter(){
+		foreach([
+			"a" => ["a"],
+			"a," => ["a",""],
+			"a,b" => ["a","b"],
+			"a,b," => ["a","b",""],
+			"a, b" => ["a"," b"],
+			"a, b, " => ["a"," b"," "],
+			'"a,b" c, d' => ['"a,b" c',' d'],
+			'"a,b" c, (d,e) f' => ['"a,b" c',' (d,e) f'],
+			'"a,b" c, (d,e) f, g\,h i' => ['"a,b" c',' (d,e) f',' g\,h i'],
+			"," => ["",""],
+			",a," => ["","a",""],
+			"" => [""],
+			" " => [" "],
+		] as $str => $result){
+			$this->assertEquals($result,Yarri\EmailAddressRecognizer::_split_on_delimiter($str,","),"_split_on_delimiter() for >>{$str}<< failed");
+		}
+	}
 }

@@ -102,142 +102,76 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 		return $out;
 	}
 
-	static function _split_addresses_by_group($address){
-		$address = trim($address);
-
-		$out = array();
-
-		$_item = "";
-		$_in_comment = false;
-		$_in_doublequote = false;
-		$_in_group = false;
-		$_group = "";
-
-		$char = null;
+	// Splits $str on $delimiter, respecting parenthesized comments and double-quoted strings.
+	// Returns an array of substrings (the delimiter itself is not included).
+	static function _split_on_delimiter($str, $delimiter){
+		$out = [];
+		$current = "";
+		$in_comment = false;
+		$in_doublequote = false;
 		$prev_char = null;
-	
-		$len = strlen($address);
+		$len = strlen($str);
 		for($i=0;$i<$len;$i++){
-
-			$char = $address[$i];
-
-			if($char=='(' && $prev_char!="\\" && !$_in_comment && !$_in_doublequote){
-				$_in_comment = true;
-				$_item .= $char;
-				$prev_char = $char;
-				continue;
+			$char = $str[$i];
+			if($char=='(' && $prev_char!="\\" && !$in_comment && !$in_doublequote){
+				$in_comment = true;
+				$current .= $char;
+			}elseif($char==')' && $prev_char!="\\" && $in_comment){
+				$in_comment = false;
+				$current .= $char;
+			}elseif($char=='"' && $prev_char!="\\" && !$in_comment){
+				$in_doublequote = !$in_doublequote;
+				$current .= $char;
+			}elseif($char==$delimiter && $prev_char!="\\" && !$in_comment && !$in_doublequote){
+				$out[] = $current;
+				$current = "";
+			}else{
+				$current .= $char;
 			}
-
-			if($char==')' && $prev_char!="\\" && $_in_comment){
-				$_in_comment = false;
-				$_item .= $char;
-				$prev_char = $char;
-				continue;
-			}
-
-			if($char=='"' && $prev_char!="\\" && !$_in_comment){
-				if($_in_doublequote){
-					$_in_doublequote = false;
-				}else{
-					$_in_doublequote = true;
-				}
-				$_item .= $char;
-				$prev_char = $char;
-				continue;
-			}
-
-			
-			if($char==":" && $prev_char!="\\" && !$_in_group && !$_in_comment && !$_in_doublequote){
-				$_in_group = true;
-				$_group = $_item;
-				$prev_char = $char;
-				$_item = "";
-				continue;
-			}
-
-			if($char ==";" && $prev_char!="\\" && $_in_group && !$_in_comment && !$_in_doublequote){
-				$_in_group = false;
-				$out[] = array(
-					"group" => trim($_group),
-					"addresses" => trim($_item)
-				);
-				$prev_char = $char;
-				$_group = "";
-				$_item = "";
-				continue;
-			}
-
-			$_item .= $char;
-			
 			$prev_char = $char;
 		}
-		if(strlen(trim($_item))>0){
-			$out[] = array(
-				"group" => trim($_group),
-				"addresses" => trim($_item)
-			);
+		$out[] = $current;
+		return $out;
+	}
+
+	static function _split_addresses_by_group($address){
+		$address = trim($address);
+		$out = [];
+		foreach(self::_split_on_delimiter($address, ';') as $segment){
+			$segment = trim($segment);
+			if($segment==='') continue;
+			$parts = self::_split_on_delimiter($segment, ':');
+			if(count($parts)>1){
+				$out[] = array(
+					"group" => trim($parts[0]),
+					"addresses" => trim(join(':', array_slice($parts, 1))),
+				);
+			}else{
+				$out[] = array(
+					"group" => "",
+					"addresses" => $segment,
+				);
+			}
 		}
 		return $out;
 	}
 
 	static function _split_addresses_by_emails($address){
-		$out = array();
-
-		$_item = "";
-		$_in_comment = false;
-		$_in_doublequote = false;
-
-		$char = null;
-		$prev_char = null;
-	
-		$len = strlen($address);
-		for($i=0;$i<$len;$i++){
-
-			$char = $address[$i];
-
-			if($char=='(' && $prev_char!="\\" && !$_in_comment && !$_in_doublequote){
-				$_in_comment = true;
-				$_item .= $char;
-				$prev_char = $char;
-				continue;
-			}
-
-			if($char==')' && $prev_char!="\\" && $_in_comment){
-				$_in_comment = false;
-				$_item .= $char;
-				$prev_char = $char;
-				continue;
-			}
-
-			if($char=='"' && $prev_char!="\\" && !$_in_comment){
-				if($_in_doublequote){
-					$_in_doublequote = false;
-				}else{
-					$_in_doublequote = true;
-				}
-				$_item .= $char;
-				$prev_char = $char;
-				continue;
-			}
-
-
-			if($char =="," && $prev_char!="\\" && !$_in_comment && !$_in_doublequote){
-				$out[] = trim($_item);
-				$prev_char = $char;
-				$_item = "";
-				continue;
-			}
-
-			$_item .= $char;
-			
-			$prev_char = $char;
+		$out = [];
+		$parts = self::_split_on_delimiter($address, ',');
+		// The last part is what remains after the final comma (or the whole string
+		// if there is no comma). It is discarded when empty to silently ignore
+		// a trailing comma. Middle empty parts are kept so they surface as invalid
+		// addresses and cause isValid() to return false.
+		$last = array_pop($parts);
+		foreach($parts as $item){
+			$out[] = trim($item);
 		}
-
-		if(strlen(trim($_item))>0){
-			$out[] = trim($_item);
+		$last = trim($last);
+		if(strlen($last)>0){
+			$out[] = $last;
 		}
-		
-		return $out;	
+		return $out;
 	}
 
 	static function _split_addresses_get_email($address){
