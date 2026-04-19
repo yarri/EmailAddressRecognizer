@@ -90,7 +90,8 @@ class TcEmailAddressRecognizer extends TcBase{
 			"john@doe.com",
 			// "<john@doe.com>", // ??
 			"John Doe <john@doe.com>",
-			'"Doe, John" <john@doe.com>'
+			'"Doe, John" <john@doe.com>',
+
 		] as $email_address){
 			$item = new Yarri\EmailAddressRecognizer\RecognizedItem($email_address);
 			$this->assertEquals(true,$item["valid"],$email_address);
@@ -149,6 +150,23 @@ class TcEmailAddressRecognizer extends TcBase{
 		$this->assertEquals("john.doe@example.com",$er["address"]);
 		$this->assertEquals("example.com",$er["domain"]);
 		$this->assertEquals("John Doe",$er["name"]);
+		$this->assertEquals("",$er["group"]);
+		$this->assertEquals(true,$er["valid"]);
+
+		$er = new Yarri\EmailAddressRecognizer\RecognizedItem('"John Doe from \\"Example.com\\"" <John.Doe@EXAMPLE.com>');
+		$this->assertEquals(array(
+			"valid" => true,
+			"address" => "John.Doe@EXAMPLE.com",
+			"full_address" => '"John Doe from \"Example.com\"" <John.Doe@EXAMPLE.com>',
+			"name" => 'John Doe from "Example.com"',
+			"domain" => "EXAMPLE.com",
+			"group" => "",
+			"valid" => true,
+		),$er->toArray());
+		$this->assertEquals('"John Doe from \"Example.com\"" <John.Doe@EXAMPLE.com>',"$er");
+		$this->assertEquals("John.Doe@EXAMPLE.com",$er["address"]);
+		$this->assertEquals("EXAMPLE.com",$er["domain"]);
+		$this->assertEquals('John Doe from "Example.com"',$er["name"]);
 		$this->assertEquals("",$er["group"]);
 		$this->assertEquals(true,$er["valid"]);
 

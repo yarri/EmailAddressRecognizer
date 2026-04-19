@@ -279,8 +279,11 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 			$out["domain"] = end($_ar);
 		}
 
-		//zustavaji mi na koci uvozovky
-		$out["name"] = preg_replace('/"$/','',$out["name"]);
+		$out["name"] = preg_replace('/"$/','',$out["name"]); //zustavaji mi na koci uvozovky
+		$out["name"] = strtr($out["name"],[
+			'\"' => '"',
+			"\\\\" => "\\",
+		]);
 
 		if($out["valid"]){
 			// spolehlivejsi validace prevzata z EmailField z frameworku ATK14
