@@ -8,16 +8,23 @@ class TcEmailAddressRecognizer extends TcBase{
 		$items = $ear->toArray();
 		$this->assertEquals(1,sizeof($items));
 
-		$ear = new Yarri\EmailAddressRecognizer('IT: John Doe <john@doe.com>');
+		$ear = new Yarri\EmailAddressRecognizer('IT: John Doe <john@doe.com>, Richard Roe <ricard@roe.com>');
 		$this->assertEquals(true,$ear->isValid());
-		$this->assertEquals("John Doe <john@doe.com>",(string)$ear);
+		$this->assertEquals("John Doe <john@doe.com>, Richard Roe <ricard@roe.com>",(string)$ear);
 		$items = $ear->toArray();
-		$this->assertEquals(1,sizeof($items));
+		$this->assertEquals(2,sizeof($items));
+		//
 		$this->assertEquals("john@doe.com",$items[0]->getAddress());
 		$this->assertEquals("John Doe",$items[0]->getName());
 		$this->assertEquals("John Doe <john@doe.com>",$items[0]->getFullAddress());
 		$this->assertEquals("doe.com",$items[0]->getDomain());
 		$this->assertEquals("IT",$items[0]->getGroup());
+		//
+		$this->assertEquals("ricard@roe.com",$items[1]->getAddress());
+		$this->assertEquals("Richard Roe",$items[1]->getName());
+		$this->assertEquals("Richard Roe <ricard@roe.com>",$items[1]->getFullAddress());
+		$this->assertEquals("roe.com",$items[1]->getDomain());
+		$this->assertEquals("IT",$items[1]->getGroup());
 
 		// two valid addresses
 		$ear = new Yarri\EmailAddressRecognizer('John Doe <john@doe.com>, samantha@doe.com');
