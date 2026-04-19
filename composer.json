@@ -1,7 +1,7 @@
 {
         "name": "yarri/email-address-recognizer",
         "type": "library",
-        "description": "Parses email addresses from the To: or Cc: header in a message.",
+        "description": "Parses and validates email addresses from To: or Cc: headers, including named addresses, quoted display names, and RFC 2822 groups.",
         "keywords": [],
         "homepage": "https://github.com/yarri/EmailAddressRecognizer",
         "license": ["MIT"],
