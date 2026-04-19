@@ -73,6 +73,19 @@ class TcEmailAddressRecognizer extends TcBase{
 		$this->assertEquals(true,$items[0]["valid"]);
 		$this->assertEquals("samantha@@doe.com",(string)$items[1]);
 		$this->assertEquals(false,$items[1]["valid"]);
+
+		// multiple groups
+		$ear = new Yarri\EmailAddressRecognizer('IT: John Doe <john@doe.com>, jane@doe.com; Management: boss@company.com, cto@company.com;');
+		$this->assertEquals(true,$ear->isValid());
+		$this->assertEquals(4,sizeof($ear));
+		$this->assertEquals("IT",$ear[0]->getGroup());
+		$this->assertEquals("john@doe.com",$ear[0]->getAddress());
+		$this->assertEquals("IT",$ear[1]->getGroup());
+		$this->assertEquals("jane@doe.com",$ear[1]->getAddress());
+		$this->assertEquals("Management",$ear[2]->getGroup());
+		$this->assertEquals("boss@company.com",$ear[2]->getAddress());
+		$this->assertEquals("Management",$ear[3]->getGroup());
+		$this->assertEquals("cto@company.com",$ear[3]->getAddress());
 	}
 
 	function test_cleaning(){
