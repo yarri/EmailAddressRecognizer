@@ -3,6 +3,10 @@ Change Log
 
 All notable changes to EmailAddressRecognizer will be documented in this file.
 
+## [0.2] - 2026-04-19
+
+* Code cleaned, optimized and fixed
+
 ## [0.1.3] - 2023-01-03
 
 * 88b074a - Added few getters to RecognizedItem
