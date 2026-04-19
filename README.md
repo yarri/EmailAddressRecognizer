@@ -49,6 +49,9 @@ new Yarri\EmailAddressRecognizer('john@doe.com, Jane Doe <jane@doe.com>');
 
 // RFC 2822 group syntax
 new Yarri\EmailAddressRecognizer('IT: John Doe <john@doe.com>, jane@doe.com;');
+
+// Multiple groups
+new Yarri\EmailAddressRecognizer('IT: John Doe <john@doe.com>, jane@doe.com; Management: boss@company.com, cto@company.com;');
 ```
 
 Iterating Over Addresses
