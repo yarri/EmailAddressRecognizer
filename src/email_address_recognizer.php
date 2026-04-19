@@ -14,8 +14,6 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 	}
 	function __toString(){ return $this->toString(); }
 
-	function getId(){ return $this->toString(); }
-
 	/* ArrayAccess methods */
 	#[\ReturnTypeWillChange]	
 	public function offsetExists ( $offset ){ return isset($this->_ary[$offset]); }

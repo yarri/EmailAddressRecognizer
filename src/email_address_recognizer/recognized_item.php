@@ -35,6 +35,4 @@ class RecognizedItem extends \Dictionary {
 
 	function toString(){ return $this->str; }
 	function __toString(){ return $this->toString(); }
-
-	function getId(){ return $this->toString(); }
 }
