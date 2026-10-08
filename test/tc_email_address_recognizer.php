@@ -108,7 +108,7 @@ class TcEmailAddressRecognizer extends TcBase{
 			"John@doe.com",
 			"JOHN@DOE.COM",
 			"john@doe.com",
-			// "<john@doe.com>", // ??
+			"<john@doe.com>",
 			"John Doe <john@doe.com>",
 			'"Doe, John" <john@doe.com>',
 

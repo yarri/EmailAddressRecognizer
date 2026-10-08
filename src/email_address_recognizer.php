@@ -185,7 +185,10 @@ class EmailAddressRecognizer implements \ArrayAccess, \Countable, \Iterator{
 			"name" => ""
 		);
 
-		if(preg_match('/^[^"\s]+@.+$/',$address,$pieces)){
+		if(preg_match('/^<([^<>]+@[^<>]+)>$/',$address,$pieces)){ // <john@doe.com>
+			$out["valid"] = true;
+			$out["address"] = trim($pieces[1]);
+		}elseif(preg_match('/^[^"\s]+@.+$/',$address,$pieces)){
 			$out["valid"] = true;
 			$out["address"] = $address;
 		}elseif(preg_match('/^"?(.*)"?\s*<(.+@.+)>$/',$address,$pieces)){
