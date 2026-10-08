@@ -3,6 +3,10 @@ Change Log
 
 All notable changes to EmailAddressRecognizer will be documented in this file.
 
+## [0.2.1] - 2026-10-08
+
+* ceabc03 - Fix - detecting email addresses only when they are enclosed in angle brackets
+
 ## [0.2] - 2026-04-19
 
 * Source code cleaned, optimized and fixed
